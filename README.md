@@ -27,8 +27,8 @@ Save the appsettings.json file.
 
 Build and run the application using the following commands:
 
-`dotnet build`
-`dotnet run`
+	"dotnet build"
+	"dotnet run"
 
 Alternatively, you can use your preferred development environment to build and run the application.
 
