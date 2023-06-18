@@ -1,0 +1,91 @@
+# Visual Studio Code
+.vscode/
+
+# Visual Studio
+*.sln
+*.suo
+*.user
+*.userosscache
+*.sln.ide
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+obj/
+bin/
+PublishProfiles/
+
+# MSTest test Results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+
+# Blazor Dev Server
+blazorwasm/obj/
+blazorwasm/bin/
+
+# Package Dependency Directory
+packages/
+
+# NPM Dependency Directory
+node_modules/
+
+# .NET Core
+*.dotnet-*
+*.cache
+*.dll
+*.exe
+*.pdb
+*.xml
+
+# Files built by Visual Studio
+App.config
+*.launchSettings.json
+*.dll.config
+
+# User-specific files
+*.userprefs
+*.suo
+*.sln.ide
+*.sln.docstates
+
+# .NET Core
+.project*
+*.nuget.*
+*.xproj.user
+*.xproj.bak
+*.lock.json
+*.pfx
+*.snk
+*.user
+*.vspscc
+.bower-cache/
+bower_components/
+.npm/
+paket-files/
+.paket/
+.paket.local/
+.vs/
+app.publish/
+*.sw?
+_TemporaryKey*.cmd
+*.userprefs
+npm-debug.log
+node_modules/
+logs/
+*.dbmdl
+test-results/
+*.testsettings
+*.vsp
+*.vspx
+*.vsix
+*.vsix.state
+*.pubxml
+*.publishproj
+*.pfx
+*.suo
+*.cache
+*.csproj.DotSettings.user
+.vs/config/applicationhost.config
+
+appsettings.json

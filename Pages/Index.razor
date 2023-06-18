@@ -1,0 +1,126 @@
+﻿@page "/"
+@using Microsoft.Graph.Core
+@using Microsoft.Graph
+
+@inject IHttpClientFactory HttpClientFactory
+@inject Microsoft.Identity.Web.ITokenAcquisition TokenAcquisitionService
+
+
+@if (filesArray.Count() == 0)
+{
+    <p><em>@pageMessage</em></p>
+}
+else
+{
+    <h1>Welcome @userDisplayName</h1>
+
+    <div class="btn-group mt-3" role="group" aria-label="Basic example">
+        <button class="btn btn-success" @onclick="()=>SortFiles(SortBy.Name)">Sort by Name</button>
+        <button class="btn btn-primary" @onclick="()=>SortFiles(SortBy.Date)">Sort by Date</button>
+    </div>
+
+    <div class="my-5">
+        @foreach (var file in sortedFiles)
+        {
+            <div class="mt-3 border-1">
+
+                <h3>@file.name</h3>
+                <img src="@file.url" />
+            </div>
+        }
+    </div>
+}
+@code {
+    private string userDisplayName;
+
+    private List<File> filesArray = new List<File>();
+    private IEnumerable<File> sortedFiles = new List<File>();
+
+    private HttpClient _httpClient;
+
+    private string pageMessage { get; set; } = "Loading...";
+
+    protected override async Task OnInitializedAsync()
+    {
+        _httpClient = HttpClientFactory.CreateClient();
+        try
+        {
+            // get a token
+            var token = await TokenAcquisitionService.GetAccessTokenForUserAsync(new string[] { "User.Read",
+        "Files.Read",
+        "Files.Read.All" });
+
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            var dataRequest = await _httpClient.GetAsync("https://graph.microsoft.com/v1.0/me");
+
+            if (dataRequest.IsSuccessStatusCode)
+            {
+                var userData = System.Text.Json.JsonDocument.Parse(await dataRequest.Content.ReadAsStreamAsync());
+                userDisplayName = userData.RootElement.GetProperty("displayName").GetString();
+            }
+
+
+            var folderIdRequest = await _httpClient.GetAsync("https://graph.microsoft.com/v1.0/me/drive/root/children");
+            string folderId = String.Empty;
+
+            if (folderIdRequest.IsSuccessStatusCode)
+            {
+                var filesRequest2Data = System.Text.Json.JsonDocument.Parse(await folderIdRequest.Content.ReadAsStreamAsync());
+                var rawFilesArray = filesRequest2Data.RootElement.GetProperty("value").EnumerateArray();
+
+                foreach (var f in rawFilesArray)
+                    if (f.GetProperty("name").GetString() == "blocktrust")
+                        folderId = f.GetProperty("id").GetString();
+
+            }
+
+            var filesRequest = await _httpClient.GetAsync($"https://graph.microsoft.com/v1.0/me/drive/items/{folderId}/children/?$expand=thumbnails");
+
+            sortedFiles = filesArray;
+
+            if (filesRequest.IsSuccessStatusCode)
+            {
+                var filesRequest2Data = System.Text.Json.JsonDocument.Parse(await filesRequest.Content.ReadAsStreamAsync());
+                var rawFilesArray = filesRequest2Data.RootElement.GetProperty("value").EnumerateArray();
+
+                foreach (var f in rawFilesArray)
+                {
+                    var file = new File();
+                    file.name = f.GetProperty("name").GetString();
+                    file.url = f.GetProperty("thumbnails")[0].GetProperty("medium").GetProperty("url").GetString();
+                    file.createdAt = f.GetProperty("createdDateTime").GetDateTime();
+                    filesArray.Add(file);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"ERROR MESSAGE::{e.Message}");
+            pageMessage = "Error. Try to relogin!";
+        }
+
+    }
+
+    public class File
+    {
+        public DateTime createdAt;
+        public string name;
+        public string url;
+    }
+
+
+    enum SortBy
+    { Name, Date }
+
+    private void SortFiles(SortBy sortBy)
+    {
+        if (sortBy == SortBy.Name)
+        {
+            sortedFiles = filesArray.OrderBy(f => f.name).ToArray();
+        }
+        else if (sortBy == SortBy.Date)
+        {
+            sortedFiles = filesArray.OrderBy(f => f.createdAt).ToArray();
+        }
+    }
+}

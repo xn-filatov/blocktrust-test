@@ -1,0 +1,19 @@
+﻿@page "/auth-response"
+
+@using Microsoft.Identity.Web
+@using Microsoft.Graph
+@inject Microsoft.Graph.GraphServiceClient GraphServiceClient
+@inject MicrosoftIdentityConsentAndConditionalAccessHandler ConsentHandler
+
+<h1>Me</h1>
+
+<p>This component demonstrates fetching data from a service.</p>
+
+
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+
+    }
+}
