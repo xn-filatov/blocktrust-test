@@ -8,6 +8,9 @@ Before running this application, make sure you have the following prerequisites 
 .NET 7 SDK
 Visual Studio or Visual Studio Code (optional)
 
+You will also have to register an Azure AD app:
+https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app
+
 ## Getting Started
 Clone or download this repository to your local machine.
 
@@ -45,10 +48,10 @@ The images will be displayed on the main page. You can scroll through them or so
 This application utilizes the Microsoft Graph API to authenticate with Azure Active Directory (Azure AD) and access the user's OneDrive files. 
 The appsettings.json file contains the necessary configuration values for authentication:
 
-Domain: Your Azure AD domain name.
-TenantId: Your Azure AD tenant ID.
-ClientId: Your Azure AD client ID (registered application ID).
-ClientSecret: Your Azure AD client secret (registered application secret).
+	"Domain": Your Azure AD domain name.
+	"TenantId": Your Azure AD tenant ID.
+	"ClientId": Your Azure AD client ID (registered application ID).
+	"ClientSecret": Your Azure AD client secret (registered application secret).
 During the authentication process, the application uses the Azure AD OAuth 2.0 flow to obtain an access token. This token is then used to authorize API requests to the Microsoft Graph API, specifically targeting the user's OneDrive "blocktrust" folder.
 
 The retrieved images are displayed on the home page using Blazor components and data binding.
