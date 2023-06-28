@@ -1,4 +1,4 @@
-# Blocktrust test App
+# OneDrive Access App
 This is a Blazor Web Server application that allows users to view pictures from their OneDrive "blocktrust" folder. 
 The application uses the Microsoft Graph API to authenticate the user and access their OneDrive files.
 
